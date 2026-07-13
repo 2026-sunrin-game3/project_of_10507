@@ -61,7 +61,7 @@ public class EntityHealth : MonoBehaviour
 
         if (attacker != null)
         {
-            critPer = attacker.stat.GetresultValue("cirtPer");
+            critPer = attacker.stat.GetresultValue("critPer");
             critMul = attacker.stat.GetresultValue("critMul");
             inc = attacker.stat.GetresultValue("increaseDamage");
 
@@ -76,9 +76,13 @@ public class EntityHealth : MonoBehaviour
             return;
         }
 
-        float dmg = ctx.damage * (1 + stat.GetresultValue("HurtDamage") / 100) * (1 + inc/100);
+        float dmg = ctx.damage * (1 + stat.GetresultValue("hurtDamage") / 100) * (1 + inc/100);
 
         if (UnityEngine.Random.Range(0 , 100) <= critPer) dmg *= 1 + critMul/100;
+
+        dmg -= stat.GetresultValue("defense");
+
+        if (dmg < 0) dmg = 0;
 
         health -= dmg;
 

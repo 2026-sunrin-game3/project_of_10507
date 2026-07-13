@@ -358,6 +358,7 @@ GameObject:
   - component: {fileID: 858614812}
   - component: {fileID: 858614813}
   - component: {fileID: 858614815}
+  - component: {fileID: 858614816}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -494,7 +495,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8599556034744ba49d7dc6a87abed4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  moveSpeed: 3
   jumpPower: 12
   groundMask_:
     serializedVersion: 2
@@ -602,10 +602,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBattle
   health: {fileID: 0}
+  stat: {fileID: 0}
+  atkCool: 0
   defaultAttack:
-    offeset: {x: 1.75, y: 0}
+    offset: {x: 0, y: 0}
     size: {x: 3.5, y: 2}
-    OnDrawGizmos: 0
+    drawGizmos: 0
   enemyMask:
     serializedVersion: 2
     m_Bits: 64
@@ -621,9 +623,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a73fa3801196940fa89107e3f940c96b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EntityHealth
-  health: 10
-  maxHealth: 10
+  health: 50
+  maxHealth: 50
   isDeath: 0
+--- !u!114 &858614816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 858614805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b65341d5593ca4469a7fcfcd71789fea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EntityStat
+  defaultStat:
+  - Key: attackDamage
+    Value: 3
+  - Key: defense
+    Value: 3
+  - Key: increaseDamage
+    Value: 1
+  - Key: critPer
+    Value: 3
+  - Key: critMul
+    Value: 2
+  - Key: hurtDamage
+    Value: 1
+  - Key: atkSpeed
+    Value: 1
+  - Key: moveSpeed
+    Value: 3
 --- !u!1 &1071197865
 GameObject:
   m_ObjectHideFlags: 0
@@ -635,6 +666,8 @@ GameObject:
   - component: {fileID: 1071197869}
   - component: {fileID: 1071197868}
   - component: {fileID: 1071197867}
+  - component: {fileID: 1071197871}
+  - component: {fileID: 1071197872}
   - component: {fileID: 1071197866}
   - component: {fileID: 1071197870}
   m_Layer: 6
@@ -806,6 +839,65 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1071197871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1071197865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b65341d5593ca4469a7fcfcd71789fea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EntityStat
+  defaultStat:
+  - Key: attackDamage
+    Value: 5
+  - Key: defense
+    Value: 1
+  - Key: increaseDamage
+    Value: 1
+  - Key: critPer
+    Value: 3
+  - Key: critMul
+    Value: 2
+  - Key: hurtDamage
+    Value: 1
+  - Key: atkSpeed
+    Value: 1
+  - Key: moveSpeed
+    Value: 3
+--- !u!114 &1071197872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1071197865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23eb802512dfd4efc99371a7e82a4df3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Boss
+  health: {fileID: 0}
+  stat: {fileID: 0}
+  rigid: {fileID: 0}
+  direction: 0
+  groundMask_:
+    serializedVersion: 2
+    m_Bits: 128
+  groundDist_: 0.7
+  atkCool: 0
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 8
+  player: {fileID: 858614808}
+  attackDist: 1.5
+  defaultAttack:
+    offset: {x: 0, y: 0}
+    size: {x: 3.5, y: 1.5}
+    drawGizmos: 1
 --- !u!1 &1125806122
 GameObject:
   m_ObjectHideFlags: 0

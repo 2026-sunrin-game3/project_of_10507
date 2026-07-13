@@ -1,16 +1,17 @@
 using UnityEngine;
 
+[System.Serializable]
+public struct AttackRange
+{
+    public Vector2 offset , size;
+    public bool drawGizmos;
+}
+
 public class PlayerBattle : MonoBehaviour
 {
     public EntityHealth health;
     public EntityStat stat;
-
-    [System.Serializable]
-    public struct AttackRange
-    {
-        public Vector2 offeset , size;
-        public bool drawGizmos;
-    }
+    public float atkCool;
 
     public AttackRange defaultAttack;
 
@@ -22,9 +23,17 @@ public class PlayerBattle : MonoBehaviour
         stat = GetComponent<EntityStat>();
     }
 
+    void Update()
+    {
+        if (atkCool > 0) atkCool -= Time.deltaTime * (1 + stat.GetresultValue("atkSpeed") / 100);
+    }
+
     public void Attack()
     {
-        var col = Physics2D.OverlapBoxAll((Vector2)transform.position + defaultAttack.offeset , defaultAttack.size , 0 , enemyMask);
+        if (atkCool > 0) return;
+        atkCool = 0.5f;
+
+        var col = Physics2D.OverlapBoxAll((Vector2)transform.position + defaultAttack.offset , defaultAttack.size , 0 , enemyMask);
 
         foreach (var target in col)
         {
@@ -41,7 +50,7 @@ public class PlayerBattle : MonoBehaviour
     {
         if (!range.drawGizmos) return;
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube((Vector2)transform.position + range.offeset , range.size);
+        Gizmos.DrawWireCube((Vector2)transform.position + range.offset , range.size);
     }
 
     void OnDrawGizmos()
