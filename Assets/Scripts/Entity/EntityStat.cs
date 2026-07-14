@@ -59,6 +59,11 @@ public class EntityStat : MonoBehaviour
         return resultValue[key];
     }
 
+    public float GetBaseValue(string key)
+    {
+        return baseValue[key];
+    }
+
     public float Calc(string key)
     {
         float value = baseValue[key];
