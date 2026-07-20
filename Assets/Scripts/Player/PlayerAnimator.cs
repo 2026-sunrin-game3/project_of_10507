@@ -17,7 +17,7 @@ public class PlayerAnimator : MonoBehaviour
     {
         animator.SetBool("isMoving" , val);
 
-        float moveRate = stat.GetresultValue("moveSpeed") / stat.GetBaseValue("moveSpeed");
+        float moveRate = stat.GetResultValue("moveSpeed") / stat.GetBaseValue("moveSpeed");
 
         animator.SetFloat("moveSpeed" , moveRate);
 

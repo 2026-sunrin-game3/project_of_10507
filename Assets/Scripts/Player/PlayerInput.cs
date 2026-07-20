@@ -36,4 +36,14 @@ public class PlayerInput : MonoBehaviour
         battle.Attack();
         animator.Play("Attack1");
     }
+
+     public void OnDash()
+    {
+        battle.Dash((int)animator.direction);
+    }
+
+    public void OnSkill1()
+    {
+        battle.SKill1();
+    }
 }

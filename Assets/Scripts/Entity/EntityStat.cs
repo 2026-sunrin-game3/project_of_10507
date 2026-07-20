@@ -54,7 +54,7 @@ public class EntityStat : MonoBehaviour
         }
     }
 
-    public float GetresultValue(string key)
+    public float GetResultValue(string key)
     {
         return resultValue[key];
     }
@@ -71,6 +71,8 @@ public class EntityStat : MonoBehaviour
 
         foreach (Buf buf in bufs)
         {
+            if (buf.Key != key) continue;
+
             switch (buf.mathType)
             {
                 case MathType.Increase:

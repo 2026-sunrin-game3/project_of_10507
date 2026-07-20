@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move(Vector2 axis)
     {
-        float moveSpeed = stat.GetresultValue("moveSpeed");
+        float moveSpeed = stat.GetResultValue("moveSpeed");
         transform.Translate(axis.normalized * moveSpeed * Time.deltaTime);
     }
 
