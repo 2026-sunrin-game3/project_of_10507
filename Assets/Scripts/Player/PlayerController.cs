@@ -18,8 +18,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // 스턴 상태일 때는 조작 및 이동 애니메이션 차단
+        if (movement.isStunned) return;
+
         movement.Move(input.axis);
 
-        animator.SetMoving(input.HasAxis() , input.axis);
+        animator.SetMoving(input.HasAxis(), input.axis);
     }
 }

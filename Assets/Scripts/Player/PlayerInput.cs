@@ -14,11 +14,17 @@ public class PlayerInput : MonoBehaviour
         battle = GetComponent<PlayerBattle>();
         animator = GetComponent<PlayerAnimator>();
     }
+
     public void OnMove(InputValue value)
     {
-        Vector2 axis_ = value.Get<Vector2>();
+        if (movement != null && movement.isStunned)
+        {
+            axis = Vector2.zero;
+            return;
+        }
 
-        axis = new Vector2(axis_.x , 0);
+        Vector2 axis_ = value.Get<Vector2>();
+        axis = new Vector2(axis_.x, 0);
     }
 
     public bool HasAxis()
@@ -28,22 +34,26 @@ public class PlayerInput : MonoBehaviour
 
     public void OnJump()
     {
+        if (movement.isStunned) return;
         if (movement.Jump()) animator.Jump();
     }
 
     public void OnAttack()
     {
+        if (movement.isStunned) return;
         battle.Attack();
         animator.Play("Attack1");
     }
 
-     public void OnDash()
+    public void OnDash()
     {
+        if (movement.isStunned) return;
         battle.Dash((int)animator.direction);
     }
 
     public void OnSkill1()
     {
+        if (movement.isStunned) return;
         battle.SKill1();
     }
 }

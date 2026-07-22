@@ -11,7 +11,7 @@ public abstract class Enemy : MonoBehaviour
     public float atkCool;
     [SerializeField] LayerMask enemyMask;
     [SerializeField] DamageIndicator indicator;
-    void Start()
+    void Awake()
     {
         health = GetComponent<EntityHealth>();
         stat = GetComponent<EntityStat>();
