@@ -56,4 +56,23 @@ public class PlayerInput : MonoBehaviour
         if (movement.isStunned) return;
         battle.SKill1();
     }
+
+    public void OnSkill2()
+    {
+        if (movement.isStunned) return;
+        battle.HammerSlam();
+    }
+
+    public void OnSkill3()
+    {
+        if (movement.isStunned) return;
+        battle.ChargeAttack();
+    }
+
+    // 🔥 4번 스킬 (패링)
+    public void OnSkill4()
+    {
+        if (movement.isStunned) return;
+        battle.Parry();
+    }
 }

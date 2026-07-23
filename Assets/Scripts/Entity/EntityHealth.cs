@@ -1,99 +1,62 @@
 using System;
 using UnityEngine;
-using System.Collections.Generic;
 
 public class EntityHealth : MonoBehaviour
 {
-    EntityStat stat;
-    public float health , maxHealth;
-    public bool isDeath;
-
-    public struct Context
+    public class Context
     {
         public float damage;
         public EntityHealth attacker;
         public bool canceled;
-    }
-    List<Action<Context>> onDamageEv = new();
-
-    List<Action<Context>> onGiveDamageEv = new();
-
-    List<Action<Context>> onDeathEv = new();
-
-    public void ResetHealth()
-    {
-        health = maxHealth;
-    }
-    public void OnDamage(Action<Context> action)
-    {
-        onDamageEv.Add(action);
-    }
-    public void OnGiveDamage(Action<Context> action)
-    {
-        onGiveDamageEv.Add(action);
-    }
-    public void OnDeath(Action<Context> action)
-    {
-        onDeathEv.Add(action);
+        public Color indicatorColor = Color.white;
+        public bool showIndicator = true;
     }
 
-    void Start()
-    {
-        stat = GetComponent<EntityStat>();
-        ResetHealth();
-    }
+    public float health = 100f;
+    public float maxHealth = 100f;
+    public bool isDeath = false;
 
+    [SerializeField] private DamageIndicator indicatorPrefab; // 🔥 프리팹 직접 연결
 
-    public void GetDamage(float damage , EntityHealth attacker = null)
+    private Action<Context> onDamageCallback;
+    private Action<Context> onDeathCallback;
+
+    public void OnDamage(Action<Context> action) => onDamageCallback += action;
+    public void OnDeath(Action<Context> action) => onDeathCallback += action;
+
+    public void GetDamage(float damage, EntityHealth attacker)
     {
         if (isDeath) return;
 
-        Context ctx = new Context();
-        ctx.damage = damage;
-        ctx.attacker = attacker;
-
-        float critPer = 0 , critMul = 0 , inc = 0;
-
-        foreach (var c in onDamageEv)
+        Context ctx = new Context
         {
-            c.Invoke(ctx);
-        }
+            damage = damage,
+            attacker = attacker,
+            canceled = false,
+            indicatorColor = Color.white,
+            showIndicator = true
+        };
 
-        if (attacker != null)
-        {
-            critPer = attacker.stat.GetResultValue("critPer");
-            critMul = attacker.stat.GetResultValue("critMul");
-            inc = attacker.stat.GetResultValue("increaseDamage");
+        // 1. 피격/스턴/색상 지정 연산 (Player, Boss 등에서 ctx 값 수정)
+        onDamageCallback?.Invoke(ctx);
 
-            foreach (var c in attacker.onGiveDamageEv)
-            {
-                c.Invoke(ctx);
-            }
-        }
+        if (ctx.canceled) return;
 
-        if (ctx.canceled)
-        {
-            return;
-        }
-
-        float dmg = ctx.damage * (1 + stat.GetResultValue("hurtDamage") / 100) * (1 + inc/100);
-
-        if (UnityEngine.Random.Range(0 , 100) <= critPer) dmg *= 1 + critMul/100;
-
-        dmg -= stat.GetResultValue("defense");
-
-        if (dmg < 0) dmg = 0;
-
-        health -= dmg;
-
+        // 2. 실제 체력 차감
+        health -= ctx.damage;
         if (health <= 0)
         {
+            health = 0;
             isDeath = true;
+            onDeathCallback?.Invoke(ctx);
+        }
 
-            foreach (var c in onDeathEv)
-            {
-                c.Invoke(ctx);
-            }
+        // 3. 시스템 전체에서 오직 이 한 곳에서만 인디케이터 프리팹 소환
+        if (ctx.showIndicator && indicatorPrefab != null)
+        {
+            Vector3 spawnPos = transform.position + new Vector3(0f, 1.8f, 0f);
+            DamageIndicator indicator = Instantiate(indicatorPrefab, spawnPos, Quaternion.identity);
+            indicator.Setup(ctx.damage, ctx.indicatorColor);
         }
     }
 }

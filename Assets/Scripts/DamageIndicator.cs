@@ -1,39 +1,36 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DamageIndicator : MonoBehaviour
 {
     [SerializeField] Text text;
+    [SerializeField] float time, floatingSclae;
 
-    [SerializeField] float time , floatingSclae;
-
-    public static DamageIndicator Instance = null;
-
-    void Start()
-    {
-        Instance = this;
-    }
-
+    private float lifeTime = 0f;
 
     void Update()
     {
-        time += Time.deltaTime;
-
+        lifeTime += Time.deltaTime;
         transform.Translate(Vector2.up * floatingSclae * Time.deltaTime);
 
-        if (time > 0.65f)
+        if (lifeTime > 0.65f)
         {
             Destroy(gameObject);
         }
     }
 
-
-    public void IndicateDamage(float damage , Vector2 pos , Color color)
+    // 🔥 isHeal이 true면 앞에 "+" 표시 (회복량 구분용)
+    public void Setup(float amount, Color color, bool isHeal = false)
     {
-        DamageIndicator indicator = Instantiate(this , pos , Quaternion.identity); 
-        indicator.text.text = Mathf.Round(damage).ToString();
-        indicator.text.color = color;
+        if (text != null)
+        {
+            string sign = isHeal ? "+" : "";
+            text.text = sign + Mathf.Round(amount).ToString();
+            text.color = color;
+        }
+        else
+        {
+            Debug.LogWarning("[DamageIndicator] text(Text 컴포넌트)가 연결되어 있지 않습니다.");
+        }
     }
-
 }

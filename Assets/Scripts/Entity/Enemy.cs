@@ -10,42 +10,47 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] float groundDist_ = 0.5f;
     public float atkCool;
     [SerializeField] LayerMask enemyMask;
-    [SerializeField] DamageIndicator indicator;
-    void Awake()
+
+    protected virtual void Awake()
     {
         health = GetComponent<EntityHealth>();
         stat = GetComponent<EntityStat>();
         rigid = GetComponent<Rigidbody2D>();
 
-        health.OnDamage(OnHurt);
-        health.OnDeath(OnDeath);
+        if (health != null)
+        {
+            health.OnDamage(OnHurt); // 🔥 유일한 OnDamage 이벤트 등록 위치
+            health.OnDeath(OnDeath);
+        }
     }
 
-    void OnDeath(EntityHealth.Context ctx)
+    protected virtual void OnDeath(EntityHealth.Context ctx)
     {
         Destroy(gameObject);
     }
 
-    void OnHurt(EntityHealth.Context ctx)
+    // 🔥 EntityHealth.cs가 인디케이터를 1회 출력하므로, 여기서는 추가 생성 코드를 제거합니다.
+    // 자식 클래스(Boss 등)에서 피격 시 수치 연산이나 연출이 필요할 때 override할 수 있습니다.
+    protected virtual void OnHurt(EntityHealth.Context ctx)
     {
-        indicator.IndicateDamage(ctx.damage, transform.position + new Vector3(Random.Range(-0.3f, 0.3f), 1), Color.orange);
     }
 
     void Update()
     {
         if (atkCool > 0)
             atkCool -= Time.deltaTime * (1 + stat.GetResultValue("atkSpeed") / 100);
-            
+
         MobUpdate();
     }
-    protected virtual void MobUpdate(){}
+    protected virtual void MobUpdate() { }
 
     public void Chase(Transform target)
     {
         if (target.position.x > transform.position.x)
         {
             Move(Vector2.right);
-        } else if (target.position.x < transform.position.x)
+        }
+        else if (target.position.x < transform.position.x)
         {
             Move(Vector2.left);
         }
@@ -56,6 +61,7 @@ public abstract class Enemy : MonoBehaviour
         float moveSpeed = stat.GetResultValue("moveSpeed");
         transform.Translate(axis.normalized * moveSpeed * Time.deltaTime);
     }
+
     public void SetVelocity(Vector2 dir)
     {
         rigid.linearVelocity = dir;
@@ -99,6 +105,7 @@ public abstract class Enemy : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube((Vector2)transform.position + range.offset, range.size);
     }
+
     void OnDrawGizmos()
     {
         DrawGizmos();
@@ -106,5 +113,5 @@ public abstract class Enemy : MonoBehaviour
         Gizmos.DrawCube(transform.position + Vector3.down * groundDist_ * 0.5f, new Vector3(0.3f, groundDist_));
     }
 
-    protected virtual void DrawGizmos() {}
+    protected virtual void DrawGizmos() { }
 }
