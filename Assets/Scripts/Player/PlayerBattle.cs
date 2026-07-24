@@ -106,6 +106,8 @@ public class PlayerBattle : MonoBehaviour
 
     private void OnParrySuccess(EntityHealth attacker)
     {
+        SoundManager.Instance?.PlaySFX(2);
+
         if (health != null)
         {
             health.health = Mathf.Min(health.maxHealth, health.health + parryHealAmount);
@@ -215,22 +217,24 @@ public class PlayerBattle : MonoBehaviour
     }
 
     public void Attack()
+{
+    if (atkCool > 0) return;
+    atkCool = 0.5f;
+
+    SoundManager.Instance?.PlaySFX(4); // 🔥 플레이어 기본 공격 효과음
+
+    var col = Physics2D.OverlapBoxAll((Vector2)transform.position + defaultAttack.offset, defaultAttack.size, 0, enemyMask);
+
+    foreach (var target in col)
     {
-        if (atkCool > 0) return;
-        atkCool = 0.5f;
+        EntityHealth hp = target.GetComponent<EntityHealth>();
 
-        var col = Physics2D.OverlapBoxAll((Vector2)transform.position + defaultAttack.offset, defaultAttack.size, 0, enemyMask);
-
-        foreach (var target in col)
+        if (hp != null)
         {
-            EntityHealth hp = target.GetComponent<EntityHealth>();
-
-            if (hp != null)
-            {
-                hp.GetDamage(stat.GetResultValue("attackDamage"), health);
-            }
+            hp.GetDamage(stat.GetResultValue("attackDamage"), health);
         }
     }
+}
 
     public void SKill1()
     {
@@ -319,6 +323,8 @@ public class PlayerBattle : MonoBehaviour
         {
             animator.Play("HammerSlam");
         }
+
+        SoundManager.Instance?.PlaySFX(3);
 
         movement.SetVelocity(Vector2.right * dir * hammerForwardPower);
         yield return new WaitForSeconds(hammerForwardDuration);

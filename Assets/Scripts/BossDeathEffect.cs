@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-// 🔥 보스 처치 시 화면 전체 페이드아웃 → 대기 → 결과 이미지 표시
+// 🔥 보스 처치 시 화면 전체 페이드아웃 → 대기 → 결과 이미지 표시 + BGM 재생
 public class BossDeathEffect : MonoBehaviour
 {
     [Header("Screen Fade")]
@@ -15,7 +15,6 @@ public class BossDeathEffect : MonoBehaviour
 
     public GameObject Boss;
 
-
     public void PlayDeathSequence()
     {
         StartCoroutine(DeathSequence());
@@ -24,6 +23,7 @@ public class BossDeathEffect : MonoBehaviour
     IEnumerator DeathSequence()
     {
         Boss.SetActive(false); // 보스 오브젝트 비활성화
+
         if (fadeImage != null)
         {
             Color c = fadeImage.color;
@@ -47,5 +47,7 @@ public class BossDeathEffect : MonoBehaviour
             resultImageObject.SetActive(true);
             fadeImage.gameObject.SetActive(false); // 결과 이미지 표시 후 페이드 이미지는 숨김
         }
+
+        SoundManager.Instance?.PlayBGM(0); // 🔥 결과 이미지와 동시에 BGM 재생
     }
 }

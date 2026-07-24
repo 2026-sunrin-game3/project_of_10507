@@ -376,6 +376,8 @@ public class Boss : Enemy
             bossAnimator.Play("Attack");
         }
 
+        SoundManager.Instance?.PlaySFX(5);
+
         yield return new WaitForSeconds(0.2f);
         ExecuteHitCheck(defaultAttack, 1.0f, "기본 공격");
         yield return new WaitForSeconds(0.2f);
@@ -420,6 +422,8 @@ public class Boss : Enemy
             bossAnimator.SetDirection(direction);
             bossAnimator.Play("Uppercut");
         }
+
+        SoundManager.Instance?.PlaySFX(0);
 
         SetVelocity(Vector2.right * direction * uppercutMovePower);
         yield return new WaitForSeconds(0.2f);
@@ -469,6 +473,8 @@ public class Boss : Enemy
             bossAnimator.SetDirection(direction);
             bossAnimator.Play("Dash");
         }
+
+        SoundManager.Instance?.PlaySFX(1);
 
         SetVelocity(Vector2.right * direction * dashPower);
 
